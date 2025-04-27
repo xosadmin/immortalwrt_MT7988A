@@ -467,7 +467,7 @@ define Device/bananapi_bpi-r4-common
   DEVICE_DTS_OVERLAY:= mt7988a-bananapi-bpi-r4-emmc mt7988a-bananapi-bpi-r4-rtc mt7988a-bananapi-bpi-r4-sd mt7988a-bananapi-bpi-r4-wifi-mt7996a
   DEVICE_DTC_FLAGS := --pad 4096
   DEVICE_PACKAGES := kmod-hwmon-pwmfan kmod-i2c-mux-pca954x kmod-eeprom-at24 kmod-mt7996-firmware kmod-mt7996-233-firmware \
-		     kmod-rtc-pcf8563 kmod-sfp kmod-usb3 e2fsprogs f2fsck mkf2fs mt7988-wo-firmware
+		     kmod-rtc-pcf8563 kmod-sfp kmod-usb2 kmod-usb3 e2fsprogs f2fsck mkf2fs mt7988-wo-firmware
   DEVICE_COMPAT_VERSION := 1.1
   DEVICE_COMPAT_MESSAGE := The non-switch ports were renamed to match the board/case labels
   IMAGES := sysupgrade.itb
@@ -485,9 +485,6 @@ define Device/bananapi_bpi-r4-common
   ARTIFACT/sdcard.img.gz	:= mt798x-gpt sdmmc |\
 				   pad-to 17k | mt7988-bl2 sdmmc-comb |\
 				   pad-to 6656k | mt7988-bl31-uboot $$(DEVICE_NAME)-sdmmc |\
-				$(if $(CONFIG_TARGET_ROOTFS_INITRAMFS),\
-				   pad-to 12M | append-image-stage initramfs-recovery.itb | check-size 44m |\
-				) \
 				   pad-to 44M | mt7988-bl2 spim-nand-ubi-comb |\
 				   pad-to 45M | mt7988-bl31-uboot $$(DEVICE_NAME)-snand |\
 				   pad-to 51M | mt7988-bl2 emmc-comb |\
