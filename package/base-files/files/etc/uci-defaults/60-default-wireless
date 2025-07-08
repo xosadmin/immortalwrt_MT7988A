@@ -1,0 +1,9 @@
+uci set wireless.radio0.disabled=0
+
+uci set wireless.@wifi-iface[0].ssid="BPI-R4"
+uci delete wireless.@wifi-iface[0].encryption
+uci delete wireless.@wifi-iface[0].key
+# Create a default Wi-Fi for configuration
+
+uci commit wireless
+wifi
