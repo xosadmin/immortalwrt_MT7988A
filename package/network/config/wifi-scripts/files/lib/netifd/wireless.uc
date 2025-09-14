@@ -128,6 +128,17 @@ function config_init(uci)
 					config.mode = "link";
 			config.radios = radios;
 
+			if (dev_name != dev_names[0])
+				delete config.macaddr;
+			if (dev_name != wdev.mlo_name && config.radio_macaddr) {
+				let idx = index(dev_names, dev_name);
+				if (mlo_vif)
+					idx--;
+				let macaddr = idx >= 0 ? config.radio_macaddr[idx] : null;
+				if (macaddr)
+					config.macaddr = macaddr;
+			}
+
 			let vif = {
 				name, config,
 				device: dev_name,
@@ -143,22 +154,24 @@ function config_init(uci)
 	}
 
 	for (let name, data in sections.vlan) {
-		if (!data.iface || !vifs[data.iface])
-			continue;
-
-		for (let vif in vifs[data.iface]) {
-			let dev = devices[vif.device];
-			let handler = handlers[vif.device];
-			if (!dev || !handler)
+		for (let iface, iface_vifs in vifs) {
+			if (data.iface && data.iface != iface)
 				continue;
 
-			let config = parse_attribute_list(data, handler.vlan);
+			for (let vif in iface_vifs) {
+				let dev = devices[vif.device];
+				let handler = handlers[vif.device];
+				if (!dev || !handler)
+					continue;
 
-			let vlan = {
-				name,
-				config
-			};
-			push(vif.vlan, vlan);
+				let config = parse_attribute_list(data, handler.vlan);
+
+				let vlan = {
+					name,
+					config
+				};
+				push(vif.vlan, vlan);
+			}
 		}
 	}
 
@@ -308,6 +321,7 @@ const default_config_attr = {
 		...network_config_attr,
 		device: TYPE_STRING,
 		mode: TYPE_STRING,
+		radio_macaddr: TYPE_ARRAY,
 	},
 	station: {
 		iface: TYPE_STRING,
