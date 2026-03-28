@@ -60,8 +60,8 @@
 };
 
 &switch0 {
-	ports {
-		SWITCH_PORT(16, 9, qsgmii)
-		SWITCH_PORT(17, 10, qsgmii)
+	ethernet-ports {
+		SWITCH_PORT_SDS(16, 9, 2, qsgmii)
+		SWITCH_PORT_SDS(17, 10, 2, qsgmii)
 	};
 };

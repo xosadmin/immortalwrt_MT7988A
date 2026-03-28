@@ -92,6 +92,15 @@ define Device/lemaker_bananapi
 endef
 TARGET_DEVICES += lemaker_bananapi
 
+define Device/pine64_pinecube
+  $(call Device/FitImageGzip)
+  DEVICE_VENDOR := Pine64
+  DEVICE_MODEL := PineCube
+  SOC := sun8i-s3
+  SUNXI_DTS := $$(SUNXI_DTS_DIR)$$(SOC)-pinecube
+endef
+TARGET_DEVICES += pine64_pinecube
+
 define Device/sinovoip_bpi-m2-berry
   $(call Device/FitImageGzip)
   DEVICE_VENDOR := Sinovoip
@@ -167,7 +176,7 @@ define Device/merrii_hummingbird
   $(call Device/FitImageGzip)
   DEVICE_VENDOR := Merrii
   DEVICE_MODEL := Hummingbird
-  DEVICE_PACKAGES:=kmod-brcmfmac cypress-firmware-43362-sdio wpad-basic-mbedtls
+  DEVICE_PACKAGES:=kmod-brcmfmac cypress-firmware-43362-sdio wpad-openssl
   SOC := sun6i-a31
 endef
 TARGET_DEVICES += merrii_hummingbird
@@ -214,7 +223,7 @@ define Device/roofull_beelink-x2
   DEVICE_VENDOR := Roofull
   DEVICE_MODEL := Beelink-X2
   DEVICE_PACKAGES:=kmod-leds-gpio kmod-gpio-button-hotplug \
-	kmod-brcmfmac cypress-firmware-43430-sdio wpad-basic-mbedtls
+	kmod-brcmfmac cypress-firmware-43430-sdio wpad-openssl
   SOC := sun8i-h3
 endef
 TARGET_DEVICES += roofull_beelink-x2

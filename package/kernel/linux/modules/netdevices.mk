@@ -638,6 +638,23 @@ endef
 $(eval $(call KernelPackage,phy-motorcomm))
 
 
+define KernelPackage/dwmac-motorcomm
+  SUBMENU:=$(NETWORK_DEVICES_MENU)
+  TITLE:=Motorcomm PCI DWMAC support
+  DEPENDS:=@PCI_SUPPORT +kmod-phy-motorcomm +kmod-stmmac-core
+  KCONFIG:=CONFIG_DWMAC_MOTORCOMM
+  FILES:=$(LINUX_DIR)/drivers/net/ethernet/stmicro/stmmac/dwmac-motorcomm.ko
+  AUTOLOAD:=$(call AutoProbe,dwmac-motorcomm,1)
+endef
+
+define KernelPackage/dwmac-motorcomm/description
+  Supports the Motorcomm DWMAC-based PCI Ethernet controllers.
+  Currently only YT6801 is supported.
+endef
+
+$(eval $(call KernelPackage,dwmac-motorcomm))
+
+
 define KernelPackage/dsa
   SUBMENU:=$(NETWORK_DEVICES_MENU)
   TITLE:=Distributed Switch Architecture support
@@ -704,6 +721,64 @@ define KernelPackage/dsa-b53-mdio/description
 endef
 
 $(eval $(call KernelPackage,dsa-b53-mdio))
+
+
+define KernelPackage/dsa-ksz9477
+  SUBMENU:=$(NETWORK_DEVICES_MENU)
+  TITLE:=Microchip KSZ9477 family managed switch DSA support
+  DEPENDS:=@TARGET_imx_cortexa53 +kmod-dsa +kmod-dsa-notag +kmod-phy-micrel +kmod-regmap-core
+  KCONFIG:= \
+	CONFIG_NET_DSA_MICROCHIP_KSZ_COMMON \
+	CONFIG_NET_DSA_MICROCHIP_KSZ9477_I2C=n \
+	CONFIG_NET_DSA_MICROCHIP_KSZ_SPI=n \
+	CONFIG_NET_DSA_MICROCHIP_KSZ_PTP=n \
+	CONFIG_NET_DSA_MICROCHIP_KSZ8863_SMI=n \
+	CONFIG_NET_DSA_TAG_KSZ=y
+  FILES:= \
+	$(LINUX_DIR)/drivers/net/dsa/microchip/ksz_switch.ko \
+	$(LINUX_DIR)/net/dsa/tag_ksz.ko
+  AUTOLOAD:=$(call AutoProbe,ksz_switch)
+endef
+
+define KernelPackage/dsa-ksz9477/description
+  Microchip KSZ9477 family managed switch support. Note that this should be target
+  specific as the driver enables DCB which grows the static kernel code.
+endef
+
+$(eval $(call KernelPackage,dsa-ksz9477))
+
+
+define KernelPackage/dsa-ksz9477-i2c
+  SUBMENU:=$(NETWORK_DEVICES_MENU)
+  TITLE:=Microchip KSZ9477 family managed switch DSA support via I2C
+  DEPENDS:=+kmod-dsa-ksz9477 +kmod-regmap-i2c
+  KCONFIG:=CONFIG_NET_DSA_MICROCHIP_KSZ9477_I2C
+  FILES:= $(LINUX_DIR)/drivers/net/dsa/microchip/ksz9477_i2c.ko
+  AUTOLOAD:=$(call AutoProbe,ksz9477_i2c)
+endef
+
+define KernelPackage/dsa-ksz9477-i2c/description
+  Microchip KSZ9477 family managed switch support via I2C
+endef
+
+$(eval $(call KernelPackage,dsa-ksz9477-i2c))
+
+
+define KernelPackage/dsa-ksz9477-spi
+  SUBMENU:=$(NETWORK_DEVICES_MENU)
+  TITLE:=Microchip KSZ9477 family managed switch DSA support via SPI
+  DEPENDS:=+kmod-dsa-ksz9477 +kmod-regmap-spi
+  KCONFIG:=CONFIG_NET_DSA_MICROCHIP_KSZ_SPI
+  FILES:= $(LINUX_DIR)/drivers/net/dsa/microchip/ksz_spi.ko
+  AUTOLOAD:=$(call AutoProbe,ksz_spi)
+endef
+
+define KernelPackage/dsa-ksz9477-spi/description
+  Microchip KSZ9477 family managed switch support via SPI
+endef
+
+$(eval $(call KernelPackage,dsa-ksz9477-spi))
+
 
 define KernelPackage/dsa-mv88e6060
   SUBMENU:=$(NETWORK_DEVICES_MENU)
